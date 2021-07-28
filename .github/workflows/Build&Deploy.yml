@@ -19,11 +19,11 @@ jobs:
     - uses: actions/checkout@v2
     - name: Build with Maven
       run: mvn clean package
-    - uses: actions/upload-artifact@v2
+    - name: Publish Artifacts
+      uses: actions/upload-artifact@v1.0.0
       with:
-       name: my-artifact
-       path: path/to/artifact/
-       if-no-files-found: error # 'warn' or 'ignore' are also available, defaults to `warn` 
+        name: sampleapp
+        path: ${{ github.workspace }}/target/ 
   Dev:
     needs: build
     name: Deploy to Dev
@@ -31,6 +31,11 @@ jobs:
       name: Dev
     runs-on: ubuntu-latest
     steps:
+    # Download artifacts
+    - name: Download artifacts
+      uses: actions/download-artifact@v2
+      with:
+       name: sampleapp
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
